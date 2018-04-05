@@ -98,8 +98,8 @@ object Main {
     val groupings = model.store.bind.grouped(model.imagePageSize.bind).map(a => Vars(a: _*)).toList
 
     <div>
-      {buttonImage.bind}
       {selectImage.bind}
+      {buttonImage.bind}
       <ul>
         {
           for (i <- if (model.store.bind.nonEmpty) groupings(model.imageIdx.bind) else model.store) yield {
