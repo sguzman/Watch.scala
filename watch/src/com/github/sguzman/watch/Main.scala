@@ -18,8 +18,8 @@ object Main {
   final class ImageListView extends ViewType
   final class AlphabetView extends ViewType
 
-  final case class Model(store: Vars[AnimeUser], view: Var[ViewType])
-  val model = Model(Vars(), Var(new ListView))
+  final case class Model(store: Vars[AnimeUser], view: Var[ViewType], listPageSize: Var[Int], listIdx: Var[Int])
+  val model = Model(Vars(), Var(new ListView), Var(25), Var(0))
 
   implicit final class StrWrap(str: String) {
     def id[A] = org.scalajs.dom.document.getElementById(str).asInstanceOf[A]
@@ -44,7 +44,7 @@ object Main {
     val tup = (target, kind)
     println(s"Emitted $tup")
 
-    val _  = tup match {
+    tup match {
       case ("tab-list", "click")  => update(TabClick(new ListView))
       case ("tab-image", "click") => update(TabClick(new ImageListView))
       case ("tab-alpha", "click") => update(TabClick(new AlphabetView))
@@ -68,7 +68,7 @@ object Main {
     <div>
       <ul>
         {
-          for (i <- model.store) yield {
+          for (i <- model.store.bind.grouped(model.listPageSize.bind).map(a => Vars(a: _*)).toList(model.listIdx.bind)) yield {
             <li>{i.getAnime.getSummary.title}</li>
           }
         }
@@ -119,8 +119,8 @@ object Main {
       case Success(v) =>
         val resp = v.response.asInstanceOf[ArrayBuffer]
         val buffer = new Uint8Array(resp).map(a => a.toByte)
-        val store = StoreCache.parseFrom(buffer.toArray[Byte])
-        store.cache.values.foreach(a => model.store.value += a)
+        val store = StoreCache.parseFrom(buffer.toArray[Byte]).cache.values.toList.sortBy(_.getAnime.getSummary.title)
+        model.store.value ++= store
 
       case Failure(e) => println(e)
     })
