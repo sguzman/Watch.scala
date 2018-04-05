@@ -5,7 +5,7 @@ import org.scalajs.dom.html.Html
 
 object Main {
   @dom def render: Binding[Html] = {
-    <html>
+    <html lang="en">
       <head>
         <meta charset="UTF-8" />
         <link rel="shortcut icon" href="./watch/assets/favicon.ico" type="image/x-icon" />
