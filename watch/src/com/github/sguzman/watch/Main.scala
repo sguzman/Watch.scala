@@ -5,7 +5,7 @@ import com.thoughtworks.binding.Binding.{Var, Vars}
 import com.thoughtworks.binding.{Binding, dom}
 import org.scalajs.dom.Element
 import org.scalajs.dom.ext.Ajax
-import org.scalajs.dom.html.{Button, Div, Html}
+import org.scalajs.dom.html.{Button, Div, Html, Select}
 import org.scalajs.dom.raw.Event
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -25,29 +25,34 @@ object Main {
     def id[A] = org.scalajs.dom.document.getElementById(str).asInstanceOf[A]
   }
 
-  sealed abstract class Message[A](a: A) {
+  sealed abstract class Message[+A](a: A) {
     def print(): Unit = println(a)
   }
 
   final case class TabClick(view: ViewType) extends Message(view)
+  final case class SelectChange(size: Int) extends Message(size)
 
   def update[A](msg: Message[A]): Unit = {
     msg match {
       case TabClick(v) => model.view.value = v
+      case SelectChange(v) =>
+        model.listPageSize.value = Array(5, 25, 50, 100, 500, 1000)(v)
+        model.listIdx.value = 0
     }
   }
 
   def emit[A <: Element](e: Event): Unit = {
-    val target = e.currentTarget.asInstanceOf[A].id
+    val target = e.currentTarget.asInstanceOf[A]
     val kind = e.`type`
 
-    val tup = (target, kind)
+    val tup = (target.id, kind)
     println(s"Emitted $tup")
 
     tup match {
       case ("tab-list", "click")  => update(TabClick(new ListView))
       case ("tab-image", "click") => update(TabClick(new ImageListView))
       case ("tab-alpha", "click") => update(TabClick(new AlphabetView))
+      case ("select-list-page-size", "change") => update(SelectChange("select-list-page-size".id[Select].selectedIndex))
       case _ => throw new Exception("Bad event")
     }
   }
@@ -66,14 +71,26 @@ object Main {
 
   @dom def listView: Binding[Div] = {
     <div>
+      {selectList.bind}
       <ul>
         {
-          for (i <- model.store.bind.grouped(model.listPageSize.bind).map(a => Vars(a: _*)).toList(model.listIdx.bind)) yield {
+          for (i <- if (model.store.bind.nonEmpty) model.store.bind.grouped(model.listPageSize.bind).map(a => Vars(a: _*)).toList(model.listIdx.bind) else model.store) yield {
             <li>{i.getAnime.getSummary.title}</li>
           }
         }
       </ul>
     </div>
+  }
+
+  @dom def selectList: Binding[Select] = {
+    <select id="select-list-page-size" onchange={emit[Select] _}>
+      <option value="5">5</option>
+      <option value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+      <option value="500">500</option>
+      <option value="1000">1000</option>
+    </select>
   }
 
   @dom def body: Binding[Div] = {
