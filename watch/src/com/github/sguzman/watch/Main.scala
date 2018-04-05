@@ -74,6 +74,8 @@ object Main {
   }
 
   @dom def listView: Binding[Div] = {
+    val groupings = model.store.bind.grouped(model.listPageSize.bind).map(a => Vars(a: _*)).toList
+
     <div>
       {selectList.bind}
       {buttonList.bind}
@@ -96,7 +98,7 @@ object Main {
           <th>Won't Watch</th>
         </tr>
         {
-          for (i <- if (model.store.bind.nonEmpty) model.store.bind.grouped(model.listPageSize.bind).map(a => Vars(a: _*)).toList(model.listIdx.bind) else model.store) yield {
+          for (i <- if (model.store.bind.nonEmpty) groupings(model.listIdx.bind) else model.store) yield {
             <tr>
               <td>{i.getAnime.id.toString}</td>
               <td>{i.getAnime.getSummary.title}</td>
