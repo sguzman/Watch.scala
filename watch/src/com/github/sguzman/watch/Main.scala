@@ -98,9 +98,9 @@ object Main {
           <header>
             <h1>Anime</h1>
             <div>
-              <button id="tab-list">List</button>
-              <button id="tab-image">Image</button>
-              <button id="tab-alpha">Alpha</button>
+              <button onclick={emit[Button] _} id="tab-list">List</button>
+              <button onclick={emit[Button] _} id="tab-image">Image</button>
+              <button onclick={emit[Button] _} id="tab-alpha">Alpha</button>
             </div>
           </header>
           <main>
