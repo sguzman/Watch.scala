@@ -26,7 +26,7 @@ object Main {
   }
 
   sealed abstract class Message[A](a: A) {
-    def print = println(a)
+    def print(): Unit = println(a)
   }
 
   final case class TabClick(view: ViewType) extends Message(view)
