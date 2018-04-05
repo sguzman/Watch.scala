@@ -10,11 +10,23 @@ import scala.scalajs.js.typedarray.{ArrayBuffer, Uint8Array}
 import scala.util.{Failure, Success}
 
 object Main {
-  var store: StoreCache = _
+  sealed abstract class ViewType
+  final class ListView extends ViewType
+  final class ImageListView extends ViewType
+  final class AlphabetView extends ViewType
+
+  final case class Model(store: Vars[AnimeUser], view: Var[ViewType])
+  val model = Model(Vars(), Var(new ListView))
 
   @dom def body: Binding[Div] = {
     <div>
-      <p>???</p>
+      <ul>
+        {
+          for (i <- model.store) yield {
+            <li>{i.getAnime.getSummary.title}</li>
+          }
+        }
+      </ul>
     </div>
   }
 
@@ -46,7 +58,8 @@ object Main {
       case Success(v) =>
         val resp = v.response.asInstanceOf[ArrayBuffer]
         val buffer = new Uint8Array(resp).map(a => a.toByte)
-        store = StoreCache.parseFrom(buffer.toArray[Byte])
+        val store = StoreCache.parseFrom(buffer.toArray[Byte])
+        store.cache.values.foreach(a => model.store.value += a)
 
       case Failure(e) => println(e)
     })
