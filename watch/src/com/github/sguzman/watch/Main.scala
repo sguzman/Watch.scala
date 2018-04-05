@@ -41,7 +41,7 @@ object Main {
     val target = e.currentTarget.asInstanceOf[A].id
     val kind = e.`type`
 
-    (target, kind) match {
+    val _  = (target, kind) match {
       case ("tab-list", "click") => TabClick(new ListView)
       case ("tab-image", "click") => TabClick(new ImageListView)
       case ("tab-alpha", "click") => TabClick(new AlphabetView)
