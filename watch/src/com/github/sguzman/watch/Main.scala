@@ -1,5 +1,6 @@
 package com.github.sguzman.watch
 
+import com.github.sguzman.watch.protoc.store.StoreCache
 import com.thoughtworks.binding.{Binding, dom}
 import org.scalajs.dom.ext.Ajax
 import org.scalajs.dom.html.{Div, Html}
@@ -9,6 +10,8 @@ import scala.scalajs.js.typedarray.{ArrayBuffer, Uint8Array}
 import scala.util.{Failure, Success}
 
 object Main {
+  var store: StoreCache = _
+
   @dom def body: Binding[Div] = {
     <div>
       <p>???</p>
@@ -43,7 +46,7 @@ object Main {
       case Success(v) =>
         val resp = v.response.asInstanceOf[ArrayBuffer]
         val buffer = new Uint8Array(resp).map(a => a.toByte)
-        println(protoc.store.StoreCache.parseFrom(buffer.toArray[Byte]))
+        store = StoreCache.parseFrom(buffer.toArray[Byte])
 
       case Failure(e) => println(e)
     })
