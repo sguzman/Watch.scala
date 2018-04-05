@@ -21,13 +21,13 @@ object Main {
 
   @dom def alphaView: Binding[Div] = {
     <div>
-      <p>To come...</p>
+      <p>Alphabet view - To come...</p>
     </div>
   }
 
   @dom def imageView: Binding[Div] = {
     <div>
-      <p>To come...</p>
+      <p>Image view - To come...</p>
     </div>
   }
 
