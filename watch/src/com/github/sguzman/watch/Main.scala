@@ -54,7 +54,7 @@ object Main {
       case ("tab-list", "click")  => update(TabClick(new ListView))
       case ("tab-image", "click") => update(TabClick(new ImageListView))
       case ("tab-alpha", "click") => update(TabClick(new AlphabetView))
-      case ("select-list-page-size", "change") => update(SelectChange("select-list-page-size".id[Select].selectedIndex))
+      case ("select-list", "change") => update(SelectChange("select-list".id[Select].selectedIndex))
       case ("list-prev", "click") => update(ButtonNavClick(-1))
       case ("list-next", "click") => update(ButtonNavClick(1))
       case _ => throw new Exception("Bad event")
@@ -95,7 +95,7 @@ object Main {
   }
 
   @dom def selectList: Binding[Select] = {
-    <select id="select-list-page-size" onchange={emit[Select] _}>
+    <select id="select-list" onchange={emit[Select] _}>
       <option value="5">5</option>
       <option selected={true} value="25">25</option>
       <option value="50">50</option>
