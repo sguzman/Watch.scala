@@ -1,6 +1,7 @@
 package com.github.sguzman.watch
 
-import com.github.sguzman.watch.protoc.store.StoreCache
+import com.github.sguzman.watch.protoc.store.{AnimeUser, StoreCache}
+import com.thoughtworks.binding.Binding.{Var, Vars}
 import com.thoughtworks.binding.{Binding, dom}
 import org.scalajs.dom.ext.Ajax
 import org.scalajs.dom.html.{Div, Html}
