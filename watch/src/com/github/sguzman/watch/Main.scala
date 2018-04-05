@@ -25,7 +25,9 @@ object Main {
     def id[A] = org.scalajs.dom.document.getElementById(str).asInstanceOf[A]
   }
 
-  sealed abstract class Message[A](a: A)
+  sealed abstract class Message[A](a: A) {
+    def print = println(a)
+  }
 
   final case class TabClick(view: ViewType) extends Message(view)
 
