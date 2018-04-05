@@ -119,7 +119,7 @@ object watch extends ScalaJSModule {
     ivy"com.thoughtworks.binding::dom_sjs0.6:11.0.1",
     ivy"org.scala-js::scalajs-dom_sjs0.6:0.9.5",
     ivy"com.thesamet.scalapb::compilerplugin:0.7.1",
-    ivy"com.thesamet.scalapb::scalapb-runtime:0.7.1",
+    ivy"com.thesamet.scalapb::scalapb-runtime_sjs0.6:0.7.1",
     ivy"fr.hmil::roshttp_sjs0.6:2.1.0"
   )
 
