@@ -3,12 +3,12 @@ package com.github.sguzman.watch
 import com.github.sguzman.watch.protoc.store.{AnimeUser, StoreCache}
 import com.thoughtworks.binding.Binding.{Var, Vars}
 import com.thoughtworks.binding.{Binding, dom}
+import org.scalajs.dom.Element
 import org.scalajs.dom.ext.Ajax
 import org.scalajs.dom.html.{Button, Div, Html}
 import org.scalajs.dom.raw.Event
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.language.reflectiveCalls
 import scala.scalajs.js.typedarray.{ArrayBuffer, Uint8Array}
 import scala.util.{Failure, Success}
 
@@ -37,18 +37,17 @@ object Main {
     }
   }
 
-  def emit[A <: { def id: String }](e: Event): Unit = {
+  def emit[A <: Element](e: Event): Unit = {
     val target = e.currentTarget.asInstanceOf[A].id
     val kind = e.`type`
 
     val tup = (target, kind)
-
     println(s"Emitted $tup")
 
     val _  = tup match {
-      case ("tab-list", "click") => TabClick(new ListView)
-      case ("tab-image", "click") => TabClick(new ImageListView)
-      case ("tab-alpha", "click") => TabClick(new AlphabetView)
+      case ("tab-list", "click")  => update(TabClick(new ListView))
+      case ("tab-image", "click") => update(TabClick(new ImageListView))
+      case ("tab-alpha", "click") => update(TabClick(new AlphabetView))
       case _ => throw new Exception("Bad event")
     }
   }
@@ -78,11 +77,13 @@ object Main {
   }
 
   @dom def body: Binding[Div] = {
-    {(model.view.bind match {
+    <div>
+      {(model.view.bind match {
       case _: ListView => listView
       case _: ImageListView => imageView
       case _: AlphabetView => alphaView
     }).bind}
+    </div>
   }
 
   @dom def render: Binding[Html] = {
