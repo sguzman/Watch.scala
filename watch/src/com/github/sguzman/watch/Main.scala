@@ -104,7 +104,7 @@ object Main {
         {
           for (i <- if (model.store.bind.nonEmpty) groupings(model.imageIdx.bind) else model.store) yield {
             <li class="anime-list-item">
-              <div>
+              <div class="div-item">
                 <p>{i.getAnime.getSummary.title}</p>
                 <img class="thumbnail" src={s"https://www.anime-planet.com${i.getAnime.getSummary.img}"} />
               </div>
