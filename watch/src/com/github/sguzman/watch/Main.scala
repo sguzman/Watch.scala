@@ -19,7 +19,7 @@ object Main {
   final class AlphabetView extends ViewType
 
   final case class Model(store: Vars[AnimeUser], view: Var[ViewType], listPageSize: Var[Int], listIdx: Var[Int])
-  val model = Model(Vars(), Var(new ListView), Var(25), Var(0))
+  val model = Model(Vars(), Var(new ListView), Var(5), Var(0))
 
   implicit final class StrWrap(str: String) {
     def id[A] = org.scalajs.dom.document.getElementById(str).asInstanceOf[A]
@@ -77,13 +77,46 @@ object Main {
     <div>
       {selectList.bind}
       {buttonList.bind}
-      <ul>
+      <table>
+        <tr>
+          <th>Id</th>
+          <th>Title</th>
+          <th>Year</th>
+          <th>Rating</th>
+          <th>Show Type</th>
+          <th>Studio</th>
+          <th>Genres</th>
+          <th>Alt title</th>
+          <th>Rank</th>
+          <th>Watched</th>
+          <th>Watching</th>
+          <th>Want To Watch</th>
+          <th>Stalled</th>
+          <th>Dropped</th>
+          <th>Won't Watch</th>
+        </tr>
         {
           for (i <- if (model.store.bind.nonEmpty) model.store.bind.grouped(model.listPageSize.bind).map(a => Vars(a: _*)).toList(model.listIdx.bind) else model.store) yield {
-            <li>{i.getAnime.getSummary.title}</li>
+            <tr>
+              <td>{i.getAnime.id.toString}</td>
+              <td>{i.getAnime.getSummary.title}</td>
+              <td>{i.getAnime.getSummary.year}</td>
+              <td>{i.getAnime.getSummary.rating.toString}</td>
+              <td>{i.getAnime.getSummary.showType}</td>
+              <td>{i.getAnime.getSummary.studio}</td>
+              <td>{i.getAnime.getSummary.genres.mkString(" ")}</td>
+              <td>{i.getAnime.alt}</td>
+              <td>{i.getAnime.rank.toString}</td>
+              <td>{i.getUser.watched.toString}</td>
+              <td>{i.getUser.watching.toString}</td>
+              <td>{i.getUser.wantToWatch.toString}</td>
+              <td>{i.getUser.stalled.toString}</td>
+              <td>{i.getUser.dropped.toString}</td>
+              <td>{i.getUser.wontWatch.toString}</td>
+            </tr>
           }
         }
-      </ul>
+      </table>
     </div>
   }
 
@@ -96,12 +129,12 @@ object Main {
 
   @dom def selectList: Binding[Select] = {
     <select id="select-list" onchange={emit[Select] _}>
-      <option value="5">5</option>
-      <option selected={true} value="25">25</option>
-      <option value="50">50</option>
-      <option value="100">100</option>
-      <option value="500">500</option>
-      <option value="1000">1000</option>
+      <option selected={model.listPageSize.bind == 5} value="5">5</option>
+      <option selected={model.listPageSize.bind == 25} value="25">25</option>
+      <option selected={model.listPageSize.bind == 50} value="50">50</option>
+      <option selected={model.listPageSize.bind == 100} value="100">100</option>
+      <option selected={model.listPageSize.bind == 500} value="500">500</option>
+      <option selected={model.listPageSize.bind == 1000} value="1000">1000</option>
     </select>
   }
 
