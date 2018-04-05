@@ -4,7 +4,7 @@ import com.github.sguzman.watch.protoc.store.{AnimeUser, StoreCache}
 import com.thoughtworks.binding.Binding.{Var, Vars}
 import com.thoughtworks.binding.{Binding, dom}
 import org.scalajs.dom.ext.Ajax
-import org.scalajs.dom.html.{Div, Html}
+import org.scalajs.dom.html.{Button, Div, Html}
 import org.scalajs.dom.raw.Event
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -41,7 +41,11 @@ object Main {
     val target = e.currentTarget.asInstanceOf[A].id
     val kind = e.`type`
 
-    val _  = (target, kind) match {
+    val tup = (target, kind)
+
+    println(s"Emitted $tup")
+
+    val _  = tup match {
       case ("tab-list", "click") => TabClick(new ListView)
       case ("tab-image", "click") => TabClick(new ImageListView)
       case ("tab-alpha", "click") => TabClick(new AlphabetView)
