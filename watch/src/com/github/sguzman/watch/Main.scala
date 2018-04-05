@@ -90,14 +90,14 @@ object Main {
   @dom def buttonList: Binding[Span] = {
     <span>
       <button disabled={model.listIdx.bind == 0} onclick={emit[Button] _} id="list-prev">Previous</button>
-      <button disabled={Math.ceil(model.store.bind.length / model.listPageSize.bind) - 1 == model.listIdx.bind} onclick={emit[Button] _} id="list-next">Next</button>
+      <button disabled={Math.ceil(model.store.bind.length / model.listPageSize.bind) == model.listIdx.bind} onclick={emit[Button] _} id="list-next">Next</button>
     </span>
   }
 
   @dom def selectList: Binding[Select] = {
     <select id="select-list-page-size" onchange={emit[Select] _}>
       <option value="5">5</option>
-      <option value="25">25</option>
+      <option selected={true} value="25">25</option>
       <option value="50">50</option>
       <option value="100">100</option>
       <option value="500">500</option>
