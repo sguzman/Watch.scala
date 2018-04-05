@@ -1,4 +1,10 @@
-
+import mill._
+import mill.scalalib._
+import mill.scalajslib._
+import coursier.maven.MavenRepository
+import publish._
+import ammonite.ops._
+import ammonite.ops.ImplicitWd._
 
 object watch extends ScalaJSModule {
   /** ScalaJS version */
