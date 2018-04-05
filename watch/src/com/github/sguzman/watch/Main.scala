@@ -3,6 +3,7 @@ package com.github.sguzman.watch
 import com.thoughtworks.binding.{Binding, dom}
 import fr.hmil.roshttp.HttpRequest
 import fr.hmil.roshttp.response.SimpleHttpResponse
+import monix.execution.Scheduler.Implicits.global
 import org.scalajs.dom.html.{Div, Html}
 
 import scala.util.{Failure, Success}
