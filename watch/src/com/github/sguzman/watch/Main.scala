@@ -7,6 +7,9 @@ object Main {
   @dom def render: Binding[Html] = {
     <html>
       <head>
+        <meta charset="UTF-8" />
+        <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
+        <title>Watch Anime</title>
       </head>
       <body>
         <div id="container">
