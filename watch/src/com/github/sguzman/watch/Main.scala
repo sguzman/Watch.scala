@@ -5,7 +5,7 @@ import com.thoughtworks.binding.Binding.{Var, Vars}
 import com.thoughtworks.binding.{Binding, dom}
 import org.scalajs.dom.Element
 import org.scalajs.dom.ext.Ajax
-import org.scalajs.dom.html.{Button, Div, Html, Select}
+import org.scalajs.dom.html._
 import org.scalajs.dom.raw.Event
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -31,6 +31,7 @@ object Main {
 
   final case class TabClick(view: ViewType) extends Message(view)
   final case class SelectChange(size: Int) extends Message(size)
+  final case class ButtonNavClick(incOrDec: Int) extends Message(incOrDec)
 
   def update[A](msg: Message[A]): Unit = {
     msg match {
@@ -38,6 +39,7 @@ object Main {
       case SelectChange(v) =>
         model.listPageSize.value = Array(5, 25, 50, 100, 500, 1000)(v)
         model.listIdx.value = 0
+      case ButtonNavClick(v) => model.listIdx.value += v
     }
   }
 
@@ -53,6 +55,8 @@ object Main {
       case ("tab-image", "click") => update(TabClick(new ImageListView))
       case ("tab-alpha", "click") => update(TabClick(new AlphabetView))
       case ("select-list-page-size", "change") => update(SelectChange("select-list-page-size".id[Select].selectedIndex))
+      case ("list-prev", "click") => update(ButtonNavClick(-1))
+      case ("list-next", "click") => update(ButtonNavClick(1))
       case _ => throw new Exception("Bad event")
     }
   }
@@ -72,6 +76,7 @@ object Main {
   @dom def listView: Binding[Div] = {
     <div>
       {selectList.bind}
+      {buttonList.bind}
       <ul>
         {
           for (i <- if (model.store.bind.nonEmpty) model.store.bind.grouped(model.listPageSize.bind).map(a => Vars(a: _*)).toList(model.listIdx.bind) else model.store) yield {
@@ -80,6 +85,13 @@ object Main {
         }
       </ul>
     </div>
+  }
+
+  @dom def buttonList: Binding[Span] = {
+    <span>
+      <button disabled={model.listIdx.bind == 0} onclick={emit[Button] _} id="list-prev">Previous</button>
+      <button disabled={Math.ceil(model.store.bind.length / model.listPageSize.bind) - 1 == model.listIdx.bind} onclick={emit[Button] _} id="list-next">Next</button>
+    </span>
   }
 
   @dom def selectList: Binding[Select] = {
