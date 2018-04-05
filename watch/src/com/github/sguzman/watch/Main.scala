@@ -35,20 +35,20 @@ object Main {
     <div>
       <ul>
         {
-        for (i <- model.store) yield {
-          <li>{i.getAnime.getSummary.title}</li>
-        }
+          for (i <- model.store) yield {
+            <li>{i.getAnime.getSummary.title}</li>
+          }
         }
       </ul>
     </div>
   }
 
   @dom def body: Binding[Div] = {
-    {model.view.bind match {
+    {(model.view.bind match {
       case _: ListView => listView
       case _: ImageListView => imageView
       case _: AlphabetView => alphaView
-    }}
+    }).bind}
   }
 
   @dom def render: Binding[Html] = {
