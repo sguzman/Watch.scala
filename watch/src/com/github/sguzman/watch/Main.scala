@@ -5,8 +5,10 @@ import com.thoughtworks.binding.Binding.{Var, Vars}
 import com.thoughtworks.binding.{Binding, dom}
 import org.scalajs.dom.ext.Ajax
 import org.scalajs.dom.html.{Div, Html}
+import org.scalajs.dom.raw.Event
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.language.reflectiveCalls
 import scala.scalajs.js.typedarray.{ArrayBuffer, Uint8Array}
 import scala.util.{Failure, Success}
 
@@ -18,6 +20,32 @@ object Main {
 
   final case class Model(store: Vars[AnimeUser], view: Var[ViewType])
   val model = Model(Vars(), Var(new ListView))
+
+  implicit final class StrWrap(str: String) {
+    def id[A] = org.scalajs.dom.document.getElementById(str).asInstanceOf[A]
+  }
+
+  sealed abstract class Message[A](a: A)
+
+  final case class TabClick(view: ViewType) extends Message(view)
+
+  def update[A](msg: Message[A]): Unit = {
+    msg match {
+      case TabClick(v) => model.view.value = v
+    }
+  }
+
+  def emit[A <: { def id: String }](e: Event): Unit = {
+    val target = e.currentTarget.asInstanceOf[A].id
+    val kind = e.`type`
+
+    (target, kind) match {
+      case ("tab-list", "click") => TabClick(new ListView)
+      case ("tab-image", "click") => TabClick(new ImageListView)
+      case ("tab-alpha", "click") => TabClick(new AlphabetView)
+      case _ => throw new Exception("Bad event")
+    }
+  }
 
   @dom def alphaView: Binding[Div] = {
     <div>
@@ -63,6 +91,11 @@ object Main {
         <div id="container">
           <header>
             <h1>Anime</h1>
+            <div>
+              <button id="tab-list">List</button>
+              <button id="tab-image">Image</button>
+              <button id="tab-alpha">Alpha</button>
+            </div>
           </header>
           <main>
             {body.bind}
