@@ -118,9 +118,7 @@ object watch extends ScalaJSModule {
   def ivyDeps = Agg(
     ivy"com.thoughtworks.binding::dom_sjs0.6:11.0.1",
     ivy"org.scala-js::scalajs-dom_sjs0.6:0.9.5",
-    ivy"com.thesamet.scalapb::compilerplugin:0.7.1",
     ivy"com.thesamet.scalapb::scalapb-runtime_sjs0.6:0.7.1",
-    ivy"fr.hmil::roshttp_sjs0.6:2.1.0"
   )
 
   def scalacPluginIvyDeps = super.scalacPluginIvyDeps() ++ Agg(ivy"org.scalamacros:::paradise:2.1.1")

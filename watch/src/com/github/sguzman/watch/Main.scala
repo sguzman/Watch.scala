@@ -1,13 +1,11 @@
 package com.github.sguzman.watch
 
 import com.thoughtworks.binding.{Binding, dom}
-import fr.hmil.roshttp.HttpRequest
-import fr.hmil.roshttp.Method.GET
-import fr.hmil.roshttp.Protocol.HTTPS
-import fr.hmil.roshttp.response.SimpleHttpResponse
-import monix.execution.Scheduler.Implicits.global
+import org.scalajs.dom.ext.Ajax
 import org.scalajs.dom.html.{Div, Html}
 
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.scalajs.js.typedarray.{ArrayBuffer, Uint8Array}
 import scala.util.{Failure, Success}
 
 object Main {
@@ -39,17 +37,15 @@ object Main {
   }
 
   def main(args: Array[String]): Unit = {
-    val request =
-      HttpRequest()
-          .withMethod(GET)
-          .withProtocol(HTTPS)
-          .withHost("brotli-encode.herokuapp.com")
-          .withPath("/sguzman/GoJS/master/store.msg.br")
-          .withQueryParameter("brotli", "true")
+    val url = "https://brotli-encode.herokuapp.com/sguzman/GoJS/master/store.msg.br?brotli=true"
 
-    request.send().onComplete({
-      case res: Success[SimpleHttpResponse] => println(res.get)
-      case _: Failure[SimpleHttpResponse] => println("Houston, we got a problem!")
+    Ajax.get(url, responseType = "arraybuffer").onComplete({
+      case Success(v) =>
+        val resp = v.response.asInstanceOf[ArrayBuffer]
+        val buffer = new Uint8Array(resp).map(a => a.toByte)
+        println(protoc.store.StoreCache.parseFrom(buffer.toArray[Byte]))
+
+      case Failure(e) => println(e)
     })
 
     com.thoughtworks.binding.dom.render(org.scalajs.dom.document, render)
