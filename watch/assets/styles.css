@@ -1,8 +1,36 @@
 body {
-    background: url("./watch/assets/wallpaper.jpg") no-repeat fixed;
+    background: url("./wallpaper.jpg") no-repeat fixed;
     padding-top: 0;
+    color: white;
+}
+
+h1 {
+    text-align: center;
+}
+
+img.thumbnail {
+    width: 255px;
+    height: 400px;
+}
+div.div-item {
+    height: 550px;
+    width: 260px;
+    background-color: #FFC4DF;
+    margin-right: 5px;
+    margin-bottom: 10px;
+    padding: 4px;
+    overflow: hidden;
+}
+
+div.div-item:hover {
+    background-color: #a57c8f;
+}
+
+li.anime-list-item {
+    list-style-type: none;
+    float: left;
 }
 
 #container {
-    background-color: aliceblue;
+    background-color: #FFC4DF;
 }

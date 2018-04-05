@@ -15,7 +15,7 @@ object Main {
       <body>
         <div id="container">
           <header>
-            <h1>Hello</h1>
+            <h1>Anime</h1>
           </header>
         </div>
       </body>
