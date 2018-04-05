@@ -19,16 +19,36 @@ object Main {
   final case class Model(store: Vars[AnimeUser], view: Var[ViewType])
   val model = Model(Vars(), Var(new ListView))
 
-  @dom def body: Binding[Div] = {
+  @dom def alphaView: Binding[Div] = {
+    <div>
+      <p>To come...</p>
+    </div>
+  }
+
+  @dom def imageView: Binding[Div] = {
+    <div>
+      <p>To come...</p>
+    </div>
+  }
+
+  @dom def listView: Binding[Div] = {
     <div>
       <ul>
         {
-          for (i <- model.store) yield {
-            <li>{i.getAnime.getSummary.title}</li>
-          }
+        for (i <- model.store) yield {
+          <li>{i.getAnime.getSummary.title}</li>
+        }
         }
       </ul>
     </div>
+  }
+
+  @dom def body: Binding[Div] = {
+    {model.view.bind match {
+      case _: ListView => listView
+      case _: ImageListView => imageView
+      case _: AlphabetView => alphaView
+    }}
   }
 
   @dom def render: Binding[Html] = {
