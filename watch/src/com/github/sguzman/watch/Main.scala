@@ -18,8 +18,8 @@ object Main {
   final class ImageListView extends ViewType
   final class AlphabetView extends ViewType
 
-  final case class Model(store: Vars[AnimeUser], view: Var[ViewType], listPageSize: Var[Int], listIdx: Var[Int])
-  val model = Model(Vars(), Var(new ListView), Var(5), Var(0))
+  final case class Model(store: Vars[AnimeUser], view: Var[ViewType], listPageSize: Var[Int], listIdx: Var[Int], imagePageSize: Var[Int], imageIdx: Var[Int])
+  val model = Model(Vars(), Var(new ListView), Var(5), Var(0), Var(5), Var(0))
 
   implicit final class StrWrap(str: String) {
     def id[A] = org.scalajs.dom.document.getElementById(str).asInstanceOf[A]
@@ -31,7 +31,9 @@ object Main {
 
   final case class TabClick(view: ViewType) extends Message(view)
   final case class SelectChange(size: Int) extends Message(size)
+  final case class SelectImageChange(size: Int) extends Message(size)
   final case class ButtonNavClick(incOrDec: Int) extends Message(incOrDec)
+  final case class ButtonNavImageClick(incOrDec: Int) extends Message(incOrDec)
 
   def update[A](msg: Message[A]): Unit = {
     msg match {
@@ -40,6 +42,10 @@ object Main {
         model.listPageSize.value = Array(5, 25, 50, 100, 500, 1000)(v)
         model.listIdx.value = 0
       case ButtonNavClick(v) => model.listIdx.value += v
+      case SelectImageChange(v) =>
+        model.imagePageSize.value = Array(5, 25, 50, 100, 500, 1000)(v)
+        model.imageIdx.value = 0
+      case ButtonNavImageClick(v) => model.imageIdx.value += v
     }
   }
 
@@ -57,6 +63,9 @@ object Main {
       case ("select-list", "change") => update(SelectChange("select-list".id[Select].selectedIndex))
       case ("list-prev", "click") => update(ButtonNavClick(-1))
       case ("list-next", "click") => update(ButtonNavClick(1))
+      case ("select-image", "change") => update(SelectImageChange("select-image".id[Select].selectedIndex))
+      case ("image-prev", "click") => update(ButtonNavImageClick(1))
+      case ("image-next", "click") => update(ButtonNavImageClick(1))
       case _ => throw new Exception("Bad event")
     }
   }
@@ -67,9 +76,42 @@ object Main {
     </div>
   }
 
+  @dom def buttonImage: Binding[Span] = {
+    <span>
+      <button disabled={model.imageIdx.bind == 0} onclick={emit[Button] _} id="image-prev">Previous</button>
+      <button disabled={Math.ceil(model.store.bind.length / model.imagePageSize.bind) == model.imageIdx.bind} onclick={emit[Button] _} id="image-next">Next</button>
+    </span>
+  }
+
+  @dom def selectImage: Binding[Select] = {
+    <select id="select-image" onchange={emit[Select] _}>
+      <option selected={model.imagePageSize.bind == 5} value="5">5</option>
+      <option selected={model.imagePageSize.bind == 25} value="25">25</option>
+      <option selected={model.imagePageSize.bind == 50} value="50">50</option>
+      <option selected={model.imagePageSize.bind == 100} value="100">100</option>
+      <option selected={model.imagePageSize.bind == 500} value="500">500</option>
+      <option selected={model.imagePageSize.bind == 1000} value="1000">1000</option>
+    </select>
+  }
+
   @dom def imageView: Binding[Div] = {
+    val groupings = model.store.bind.grouped(model.imagePageSize.bind).map(a => Vars(a: _*)).toList
+
     <div>
-      <p>Image view - To come...</p>
+      {buttonImage.bind}
+      {selectImage.bind}
+      <ul>
+        {
+          for (i <- if (model.store.bind.nonEmpty) groupings(model.imageIdx.bind) else model.store) yield {
+            <li class="anime-list-item">
+              <div>
+                <p>{i.getAnime.getSummary.title}</p>
+                <img class="thumbnail" src={s"https://www.anime-planet.com${i.getAnime.getSummary.img}"} />
+              </div>
+            </li>
+          }
+        }
+      </ul>
     </div>
   }
 
