@@ -1,0 +1,8 @@
+body {
+    background: url("./watch/assets/wallpaper.jpg") no-repeat fixed;
+    padding-top: 0;
+}
+
+#container {
+    background-color: aliceblue;
+}

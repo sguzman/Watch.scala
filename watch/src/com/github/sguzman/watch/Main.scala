@@ -8,8 +8,8 @@ object Main {
     <html>
       <head>
         <meta charset="UTF-8" />
-        <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
-        <link rel="stylesheet" href="./styles.css" />
+        <link rel="shortcut icon" href="./watch/assets/favicon.ico" type="image/x-icon" />
+        <link rel="stylesheet" href="./watch/assets/styles.css" />
         <title>Watch Anime</title>
       </head>
       <body>
