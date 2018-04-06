@@ -71,8 +71,28 @@ object Main {
   }
 
   @dom def alphaView: Binding[Div] = {
+    val grouping = model.store.bind.groupBy(_.getAnime.getSummary.title.head.toLower)
+
     <div>
-      <p>Alphabet view - To come...</p>
+      <span>
+        {
+          for (i <- Vars(grouping.toSeq.sortBy(_._1): _*)) yield {
+            <a href={s"#${i._1.toString}"}><b>{i._1.toString}</b></a>
+          }
+        }
+      </span>
+      {
+        for (i <- Vars(grouping.toSeq.sortBy(_._1): _*)) yield {
+          <div>
+            <h4 id={i._1.toString}>{i._1.toString}</h4>
+            {
+              for (j <- Vars(i._2: _*)) yield {
+                <div>{j.getAnime.getSummary.title}</div>
+              }
+            }
+          </div>
+        }
+      }
     </div>
   }
 
